@@ -9,7 +9,7 @@ from llama_cpp_agent.chat_history.messages import Roles
 from llama_cpp_agent.messages_formatter import MessagesFormatter, MessagesFormatterType, PromptMarkers, llama_3_formatter
 
 from .prompts import original_prompt, agent_system_prompt
-from ..agent_tool.func_call_llm import *
+from ..agent_tool import *
 
 llm = None
 llm_model = None
@@ -27,6 +27,7 @@ def respond(
     top_k: int = 40,
     repeat_penalty: float = 1.1,
     stream: bool = False,
+    debug_output: bool = None
 ):
     """
     Respond to a message using the Gemma3 model via Llama.cpp.
@@ -89,9 +90,9 @@ def respond(
             # Create a LlamaCppAgent instance as before, including a system message with information about the tools available for the LLM agent.
             agent = LlamaCppAgent(
                 provider,
-                debug_output=True,
-                system_prompt=agent_system_prompt,
-                predefined_messages_formatter_type=MessagesFormatterType.CHATML,
+                debug_output = debug_output if debug_output != None else True,
+                system_prompt = agent_system_prompt,
+                predefined_messages_formatter_type = MessagesFormatterType.CHATML,
             )
         elif "Llama-3.2" in model:
             # Get Llama agent
@@ -99,7 +100,7 @@ def respond(
                 provider,
                 system_prompt = system_message,
                 custom_messages_formatter = llama_3_formatter,
-                debug_output = False,
+                debug_output = debug_output if debug_output != None else False,
             )
         else:
             raise Exception("There is something wrong in the model choice.")

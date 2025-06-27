@@ -3,17 +3,19 @@ import os
 from dotenv import load_dotenv
 from typing import List, Tuple
 
-from huggingface_hub import hf_hub_download
+from torch import classes
 import streamlit as st
 
 from modules.streamlit_utils import launching, display_message, avatars
-from modules.chatbot_utils import respond, vanilla, function_call_chatbot, bluetooth_processor
+from modules import vanilla, function_call_chatbot, rag_chatbot, bluetooth_processor
 from modules.chatbot_utils.install_utils import install_models
 
 # Load dotenv
 load_dotenv()
 
 # Launching
+classes.__path__ = [] # Must have to avoid error (somehow)
+
 # Set title and config
 st.set_page_config(page_title = "Chatbot Assistant",
                     page_icon = "🥺",
@@ -69,7 +71,7 @@ if question:
     # Get answer from each mode
     has_error = False
     if mode == "RAG":
-        answer, stream = "This is your RAG endpoint - we are still working on it.", False
+        answer, stream = rag_chatbot(message = question, history = history, stream = True, n_results = 4)
     elif mode == "Function calling":
         answer, stream = function_call_chatbot(message = question, history = history, stream = True)
     elif mode == "Bluetooth command":
@@ -78,7 +80,6 @@ if question:
         answer, stream = bluetooth_processor(message = question)
     else:
         answer, stream = vanilla(message = question, history = history, stream = True)
-        has_error = True
 
     # Either stream or write depending on the answer
     if stream:

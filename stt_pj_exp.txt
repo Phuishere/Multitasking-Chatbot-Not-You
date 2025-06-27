@@ -1,5 +1,17 @@
-Change Python version in VSCode:
-- F1
-- Python interpreter
-- Choose the one (for play button)
-- VSCode terminal is still using others tho
+# Change Python version in VSCode (1):
+    - F1
+    - Python interpreter
+    - Choose the one (for play button)
+    - VSCode terminal is still using others tho
+
+# Running "streamlit run main.py" using venv:
+    - Way 1: Use conda if possible
+    - Way 2: Click one of the bottom right buttons to choose interpreter (choose Python venv).
+    - Way 3: Run from setup Jupyter Notebook
+
+# Pytorch UI classes error:
+    ```
+    # main.py
+    from torch import classes
+    classes.__path__ = []
+    ```

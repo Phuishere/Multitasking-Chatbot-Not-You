@@ -11,17 +11,18 @@
 
 ### Set-up
 1. **Env**
-python3 -m venv env
+```
+python -m venv env
 ./env/Scripts/activate.bat
 pip install -r requirements.txt
+```
 
 2. **Model**
-- Download .gguf file from Google Gemma3:1b-it-qat-q4_0 (https://huggingface.co/google/gemma-3-1b-it-qat-q4_0-gguf/tree/main)
-- Or download using the code in main.py (with free user API of Hugging Face)
+- Run the script ```streamlit run main.py``` to automatically download the model.
 
 3. **C++ and Visual Studio** may need to be installed
 
-4. Further guides would be available, later
+4. Further guides would be available. Currently, some experiences in setting up the environment and code is in "stt_pj_exp.txt".
 
 ### Future development
 1. Llama CPP Server (?)

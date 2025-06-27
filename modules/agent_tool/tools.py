@@ -1,6 +1,6 @@
-from .search_tool import search, lookup_weather
-from .wikipedia_tool import get_wiki_first_paragraph
-from .gmail_tool import send_email
+from .tool_search import search, lookup_weather
+from .tool_wikipedia import get_wiki_first_paragraph
+from .tool_gmail import send_email
 
 def search_func(search_query: str):
     """
@@ -14,10 +14,10 @@ def search_func(search_query: str):
     """
     search_results = search(search_query = search_query)
     if search_results:
-        context = "Search results:\n"
+        context = "Search results:\n\n"
         for s in search_results:
-            context += "* " + s["body"]
-            context += "\n"
+            context += s["body"]
+            context += "\n\n***\n\n"
     else:
         context = ""
     return context
@@ -34,10 +34,10 @@ def price_func(search_query: str):
     
     # Price information
     if price_info:
-        context = "Price information:\n"
-        for w in price_info:
-            context += "* " + w["body"]
-            context += "\n"
+        context = "Price information:\n\n"
+        for p in price_info:
+            context += p["body"]
+            context += "\n\n***\n\n"
     else:
         return ""
     return context
@@ -54,10 +54,10 @@ def weather_func(place: str):
     """
     weather_info = lookup_weather(place)
     if weather_info:
-        context = "Weather news:\n"
+        context = "Weather news:\n\n"
         for w in weather_info:
-            context += "* " + w["body"]
-            context += "\n"
+            context += w["body"]
+            context += "\n\n***\n\n"
     else:
         context = ""
     return context

@@ -1,17 +1,25 @@
 # Prompt for AI Chatbot
-original_prompt = "You are a helpful mobile assistant called Jarvis."
+original_prompt = "You are a helpful assistant called Jarvis."
 
 # Agent prompt
 agent_output_format =\
-'''# Context:
-Use the following search and Wikipedia context to answer the user’s question:
+"""# Context:
+
 {context}
 
 ---
 
-# User question: {user_input}
-'''
-agent_system_prompt = "You are a Chat Assistant called Jarvis that can base on the information given to answer the user's query."
+# User question:
+```
+{user_input}
+```
+"""
+
+agent_system_prompt = """# INSTRUCTION:
+You are a Chat Assistant called Jarvis that can base on the information given to answer the user's query.
+Sections separated by '***' are distinct context chunks. '---' marks the end of context.
+Use the context below to answer the user's question. Don’t hallucinate and ONLY USE THE INFORMATION GIVEN. If the context is not available, tell the user that you cannot answer the question.
+"""
 
 # Prompt for processing Bluetooth message
 bluetooth_prompt = """*Act as the JSON-only parser of smart light command.*
