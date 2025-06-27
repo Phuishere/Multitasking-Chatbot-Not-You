@@ -11,25 +11,6 @@ from llama_cpp_agent.messages_formatter import MessagesFormatter, MessagesFormat
 from .prompts import original_prompt, agent_system_prompt
 from ..agent_tool.func_call_llm import *
 
-# Define the prompt markers for Gemma 3
-gemma_3_prompt_markers = {
-    Roles.system: PromptMarkers("", "\n"),  # System prompt should be included within user message
-    Roles.user: PromptMarkers("<start_of_turn>user\n", "<end_of_turn>\n"),
-    Roles.assistant: PromptMarkers("<start_of_turn>model\n", "<end_of_turn>\n"),
-    Roles.tool: PromptMarkers("", ""),  # If need tool support
-}
-
-# Create the formatter
-gemma_3_formatter = MessagesFormatter(
-    pre_prompt="",  # No pre-prompt
-    prompt_markers=gemma_3_prompt_markers,
-    include_sys_prompt_in_first_user_message=True,  # Include system prompt in first user message
-    default_stop_sequences=["<end_of_turn>", "<start_of_turn>"],
-    strip_prompt=False,  # Don't strip whitespace from the prompt
-    bos_token="<bos>",  # Beginning of sequence token for Gemma 3
-    eos_token="<eos>",  # End of sequence token for Gemma 3
-)
-
 llm = None
 llm_model = None
 
@@ -104,14 +85,7 @@ def respond(
         provider = LlamaCppPythonProvider(llm)
 
         # Create the agent
-        if model == "gemma-3-1b-it-Q8_0.gguf":
-            agent = LlamaCppAgent(
-                provider,
-                system_prompt = system_message,
-                custom_messages_formatter = gemma_3_formatter,
-                debug_output = False,
-            )
-        elif "Llama-3.2" in model and use_func_call: # Model used for function calling
+        if use_func_call: # Model used for function calling
             # Create a LlamaCppAgent instance as before, including a system message with information about the tools available for the LLM agent.
             agent = LlamaCppAgent(
                 provider,
@@ -119,7 +93,7 @@ def respond(
                 system_prompt=agent_system_prompt,
                 predefined_messages_formatter_type=MessagesFormatterType.CHATML,
             )
-        else:
+        elif "Llama-3.2" in model:
             # Get Llama agent
             agent = LlamaCppAgent(
                 provider,
@@ -127,6 +101,8 @@ def respond(
                 custom_messages_formatter = llama_3_formatter,
                 debug_output = False,
             )
+        else:
+            raise Exception("There is something wrong in the model choice.")
 
         # Set the settings like temperature, top-k, top-p, max tokens, etc.
         settings = provider.get_provider_default_settings()

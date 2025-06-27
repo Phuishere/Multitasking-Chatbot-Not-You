@@ -8,6 +8,7 @@ import streamlit as st
 
 from modules.streamlit_utils import launching, display_message, avatars
 from modules.chatbot_utils import respond, vanilla, function_call_chatbot, bluetooth_processor
+from modules.chatbot_utils.install_utils import install_models
 
 # Load dotenv
 load_dotenv()
@@ -26,6 +27,10 @@ api_key, mode = launching()
 
 # Welcoming message
 if "opened" not in st.session_state:
+    if not os.getenv("MODEL_INSTALLED"):
+        install_models()
+        os.environ["MODEL_INSTALLED"] = "true"
+
     # Initial 
     history = []
     
@@ -61,20 +66,27 @@ if question:
     display_message("user", avatars["user"], question)
     st.session_state.messages.append({"role": "user", "content": question})
 
-    # Display assistant response in chat message container
-    if mode == "Vanilla":
-        with st.chat_message(name = "assistant", avatar = avatars["assistant"]):
-            answer = st.write_stream(vanilla(message, history, stream = True))
+    # Get answer from each mode
+    has_error = False
+    if mode == "RAG":
+        answer, stream = "This is your RAG endpoint - we are still working on it.", False
     elif mode == "Function calling":
-        with st.chat_message(name = "assistant", avatar = avatars["assistant"]):
-            answer = st.write_stream(function_call_chatbot(message, history, stream = True))
+        answer, stream = function_call_chatbot(message = question, history = history, stream = True)
     elif mode == "Bluetooth command":
-        with st.chat_message(name = "assistant", avatar = avatars["assistant"]):
-            answer = st.write(bluetooth_processor(message))
+        answer, stream = bluetooth_processor(message = question)
     elif mode == "Bluetooth command":
-        with st.chat_message(name = "assistant", avatar = avatars["assistant"]):
-            answer = st.write(bluetooth_processor(message))
+        answer, stream = bluetooth_processor(message = question)
     else:
-        answer = "This is your RAG endpoint - we are still working on it."
+        answer, stream = vanilla(message = question, history = history, stream = True)
+        has_error = True
+
+    # Either stream or write depending on the answer
+    if stream:
+        with st.chat_message(name = "assistant", avatar = avatars["assistant"]):
+            answer = st.write_stream(answer)
+    else:
+        with st.chat_message(name = "assistant", avatar = avatars["assistant"]):
+            answer = st.write(answer)
+
     # Add assistant response to chat history
     st.session_state.messages.append({"role": "assistant", "content": answer})
