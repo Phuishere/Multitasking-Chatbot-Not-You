@@ -1,0 +1,5 @@
+Change Python version in VSCode:
+- F1
+- Python interpreter
+- Choose the one (for play button)
+- VSCode terminal is still using others tho
