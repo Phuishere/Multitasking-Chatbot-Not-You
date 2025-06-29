@@ -6,29 +6,49 @@ from typing import List, Tuple
 from torch import classes
 import streamlit as st
 
-from modules.streamlit_utils import launching, display_message, avatars
+from modules.streamlit_utils import init_page, render_page, display_message, avatars
+from modules.ux_language_utils import Locale, Translator, TextResources
+from modules.ux_language_utils.data import MainText, SideBarText
 from modules import vanilla, function_call_chatbot, rag_chatbot, bluetooth_processor
 from modules.chatbot_utils.install_utils import install_models
 
 # Load dotenv
 load_dotenv()
 
-# Launching
+# Launching and init services
 classes.__path__ = [] # Must have to avoid error (somehow)
 
-# Set title and config
-st.set_page_config(page_title = "Chatbot Assistant",
+if "opened" not in st.session_state:        
+    # Initialize language
+    locale = Locale.ENGLISH
+    translator = Translator(locale = Locale.ENGLISH)
+    text = TextResources(translator = translator)
+
+    # Config (must be at the start of the code)
+    st.set_page_config(page_title = text.PAGE_TITLE,
                     page_icon = "🥺",
                     initial_sidebar_state = "auto",
-                    menu_items = {"Get help": "https://en.wikipedia.org",
-                                    "Report a bug": "https://en.wikipedia.org/wiki/Insect",
-                                    "About": "https://en.wikipedia.org/wiki/Duck"})
-st.header("Your multi-tasking assistant (just like u)")
+                    menu_items = {
+                        text.GET_HELP: "https://en.wikipedia.org",
+                        text.REPORT_A_BUG: "https://en.wikipedia.org/wiki/Insect",
+                        text.ABOUT: "https://en.wikipedia.org/wiki/Duck"
+                    })
 
-api_key, mode = launching()
+    # State is a dict:
+    state = {
+        "api_key": "",
+        "mode": text.VANILLA,
+        "locale": Locale.ENGLISH,
+        "text": TextResources
+    }
 
-# Welcoming message
-if "opened" not in st.session_state:
+    # Render page the first time and get session state
+    st.session_state.state = render_page(
+        text = text,
+        state = state
+    )
+
+    # Welcoming message
     if not os.getenv("MODEL_INSTALLED"):
         install_models()
         os.environ["MODEL_INSTALLED"] = "true"
@@ -47,7 +67,15 @@ if "opened" not in st.session_state:
         # Save message
         st.session_state.messages.append({"role": "user", "content": history[0][0]})
         st.session_state.messages.append({"role": "assistant", "content": history[0][1]})
+
 else:
+    # Relaunch
+    st.session_state.state = render_page(
+        text = st.session_state.state["text"],
+        state = st.session_state.state
+    )
+
+    # Get session
     session = st.session_state.messages
     history = []
     for index, message in enumerate(session):
@@ -58,9 +86,14 @@ else:
             conversation.append(message["content"])
             history.append(tuple(conversation))
 
+
+# Get state and text
+state = st.session_state.state
+text = state["text"]
+
 # User input
 question = st.chat_input(
-    placeholder = f"Your mode: {mode}",
+    placeholder = text.MODE.format(mode = state["mode"]),
 )
 
 if question:
@@ -69,16 +102,13 @@ if question:
     st.session_state.messages.append({"role": "user", "content": question})
 
     # Get answer from each mode
-    has_error = False
-    if mode == "RAG":
+    if state["mode"] == text.RAG:
         answer, stream = rag_chatbot(message = question, history = history, stream = True, n_results = 4)
-    elif mode == "Function calling":
+    elif state["mode"] == text.FUNCTION_CALLING:
         answer, stream = function_call_chatbot(message = question, history = history, stream = True)
-    elif mode == "Bluetooth command":
-        answer, stream = bluetooth_processor(message = question)
-    elif mode == "Bluetooth command":
-        answer, stream = bluetooth_processor(message = question)
-    else:
+    elif state["mode"] == text.TRANSCRIPT:
+        answer, stream = vanilla(message = question, history = history, stream = True)
+    elif state["mode"] == text.VANILLA:
         answer, stream = vanilla(message = question, history = history, stream = True)
 
     # Either stream or write depending on the answer

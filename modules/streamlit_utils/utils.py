@@ -1,5 +1,6 @@
 import streamlit as st
 from .param import avatars
+from ..ux_language_utils import Locale, Translator, TextResources, LANGUAGE_MAP
 
 ### FUNCTIONS
 # Function for message displaying and history
@@ -14,8 +15,13 @@ def display_message(name: str, avatar: str, content: str) -> None:
     with st.chat_message(name = name, avatar = avatar):
         st.write(content)
 
+def init_page(text: TextResources):
+    # Set title
+    st.header(text.TITLE)
+    st.markdown("[Link Github](https://github.com/Phuishere/Multitasking-Chatbot-Not-You)")
+
 # Function runs every loop
-def launching():
+def render_page(text: TextResources, state: dict[str, Locale]):
     """
     Set of actions done every time the program is relaunched. These includes:
     + Title
@@ -25,14 +31,25 @@ def launching():
 
     # Sidebar to input stuff
     with st.sidebar:
+        selected_language = st.sidebar.selectbox(
+            "🌐 Select Language", options=list(LANGUAGE_MAP.keys())
+        )
+        
+        locale: Locale = LANGUAGE_MAP[selected_language]
+        if locale.value != state["locale"].value:
+            translator = Translator(locale = locale)
+            text = TextResources(translator = translator)
+
         api_key = st.text_input("API key", key = "file_qa_api_key", type = "password")
         "[Enter password to get Llama 3.2 3B!]()"
-        "[![Open in GitHub Codespaces (my link here)](https://github.com/Phuishere)]()"
+        "[![Open in GitHub Codespaces (our link here)](https://github.com/Phuishere)]()"
 
         mode = st.radio(
-            "Choose your mode:",
-            ("Vanilla", "RAG", "Function calling", "Bluetooth command", "Whisper Transcript")
+            text.MODE,
+            (text.VANILLA, text.RAG, text.FUNCTION_CALLING, text.TRANSCRIPT)
         )
+    
+    init_page(text = text)
 
     # Initialize Chat history
     if "messages" not in st.session_state:
@@ -48,4 +65,9 @@ def launching():
         # Set avatar and display
         display_message(name, avatar, content)
 
-    return api_key, mode
+    return {
+        "api_key": api_key,
+        "mode": mode,
+        "locale": locale,
+        "text": text
+    }

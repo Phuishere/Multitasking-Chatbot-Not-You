@@ -1,0 +1,17 @@
+{
+    "PAGE_TITLE": "Chatbot assistant",
+    "GET_HELP": "Get help",
+    "REPORT_A_BUG": "Report a bug",
+    "ABOUT": "About",
+
+    "TITLE": "Your lovely multitasking chatbot 🤹",
+    "CHAT_PLACE_HOLDER_FORMAT": "Your mode: {mode}",
+    
+    "API_KEY": "API key (for stronger chatbot):",
+    
+    "MODE": "Mode",
+    "VANILLA": "Vanilla",
+    "RAG": "RAG",
+    "FUNCTION_CALLING": "Function calling",
+    "TRANSCRIPT": "Transcript"
+}

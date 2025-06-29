@@ -1,0 +1,17 @@
+{
+    "PAGE_TITLE": "Trợ lý chatbot",
+    "GET_HELP": "Trợ giúp",
+    "REPORT_A_BUG": "Báo cáo bug",
+    "ABOUT": "Về chúng tôi",
+
+    "TITLE": "Chatbot biết multitasking của bạn 🤹",
+    "CHAT_PLACE_HOLDER_FORMAT": "Chế độ của bạn: {mode}",
+
+    "API_KEY": "API key (chatbot mạnh hơn):",
+
+    "MODE": "Chế độ",
+    "VANILLA": "Chat bình thường",
+    "RAG": "Trích xuất tài liệu",
+    "FUNCTION_CALLING": "Gọi hàm",
+    "TRANSCRIPT": "Tốc ký - Ghi âm"
+}
