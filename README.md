@@ -5,9 +5,13 @@
 - llama_cpp_python can also be used for agentic AI, especially the llama_cpp_agent library.
 - The output of model in respond() function can be streamed word by word using llama_cpp's function. Need to find a way to incorporate it (streaming function) with Restful API - or just use Streamlit.
 
+---
+
 ### Streamlit is used as a demo for this model
 - Has temporary memory (will be lost if reload)
 - Show streamed output of model
+
+---
 
 ### Set-up
 1. **Env**
@@ -26,6 +30,8 @@ pip install -r requirements.txt
 
 4. Further guides would be available. Currently, some experiences in setting up the environment and code is in "stt_pj_exp.txt".
 
+---
+
 ### Future development
 1. Llama CPP Server (?)
     - Separating the endpoint with streamlit
@@ -33,20 +39,20 @@ pip install -r requirements.txt
     - Multi-user use-case
     - Make the system more scalable
 
-2. Whisper AI for online transcripting purpose
-
-3. A more complex agentic system using MCP:
-    - Fix functions: email (parsing JSON), Googling (DuckDuckGo is limited)
-    - More functions: RAG (try using PostgreSQL as vector database? instead of LLaMa Index?), etc.
+2. A more complex agentic system using MCP:
+    - Changes to functions:
+        + email (parsing JSON)
+        + Googling (DuckDuckGo is limited)
+        + RAG (try using PostgreSQL as vector database? instead of LLaMa Index?)
     - Other mini and trivial function:
         + Multi-modal: a Coca model to describe text or using the built-in multi-modal models
         + Test out the reasoning-function calling paper (with reasoning chain associated with functions)
 
-4. Dockerize the project
+3. Dockerize the project
 
-5. Package it (?)
+4. Package it (?)
 
-6. Trivia:
+5. Trivia and advanced stuff for later development:
     - Add memory using Database for the model
     - Testing Jan-Nano function calling and searching ability
     - Reimplementing prompts and agentic features from scratch
