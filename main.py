@@ -53,20 +53,21 @@ if "opened" not in st.session_state:
         install_models()
         os.environ["MODEL_INSTALLED"] = "true"
 
-    # Initial 
-    history = []
+    # TODO: Get initial history from session in DB
+    st.session_state.history = []
+    history = st.session_state.history
     
     # Set opened to True
     st.session_state.opened = True
 
-    if history != []:
+    if st.session_state.history != []:
         # Display welcoming message
         display_message("user", avatars["user"], history[0][0])
         display_message("assistant", avatars["assistant"], history[0][1])
 
         # Save message
-        st.session_state.messages.append({"role": "user", "content": history[0][0]})
-        st.session_state.messages.append({"role": "assistant", "content": history[0][1]})
+        st.session_state.messages.append({"type": "chat", "role": "user", "content": history[0][0]})
+        st.session_state.messages.append({"type": "chat", "role": "assistant", "content": history[0][1]})
 
 else:
     # Relaunch
@@ -77,14 +78,7 @@ else:
 
     # Get session
     session = st.session_state.messages
-    history = []
-    for index, message in enumerate(session):
-        if index % 2 == 0:
-            conversation = []
-            conversation.append(message["content"])
-        else:
-            conversation.append(message["content"])
-            history.append(tuple(conversation))
+    history = st.session_state.history
 
 
 # Get state and text
@@ -99,7 +93,7 @@ question = st.chat_input(
 if question:
     # Display
     display_message("user", avatars["user"], question)
-    st.session_state.messages.append({"role": "user", "content": question})
+    st.session_state.messages.append({"type": "chat", "role": "user", "content": question})
 
     # Get answer from each mode
     if state["mode"] == text.RAG:
@@ -120,4 +114,5 @@ if question:
             answer = st.write(answer)
 
     # Add assistant response to chat history
-    st.session_state.messages.append({"role": "assistant", "content": answer})
+    st.session_state.messages.append({"type": "chat", "role": "assistant", "content": answer})
+    st.session_state.history.append((question, answer))
