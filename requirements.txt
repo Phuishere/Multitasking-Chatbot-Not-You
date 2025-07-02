@@ -13,5 +13,6 @@ PyPDF2==3.0.1
 pypdf==5.6.1
 regex==2024.11.6
 streamlit==1.45.0
-wcwidth
+wcwidth==0.2.13
+openai-whisper==20250625
 wikitextparser==0.56.4

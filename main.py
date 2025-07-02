@@ -90,12 +90,40 @@ question = st.chat_input(
     placeholder = text.MODE.format(mode = state["mode"]),
 )
 
-if question:
+# Get answer from each mode
+if st.session_state.state["audio_transcript"]:
     # Display
     display_message("user", avatars["user"], question)
     st.session_state.messages.append({"type": "chat", "role": "user", "content": question})
 
-    # Get answer from each mode
+    # Get transcript from audio
+    question = st.session_state.state["audio_transcript"]
+    if state["mode"] == text.RAG:
+        answer, stream = rag_chatbot(message = question, history = history, stream = True, n_results = 4)
+    elif state["mode"] == text.FUNCTION_CALLING:
+        answer, stream = function_call_chatbot(message = question, history = history, stream = True)
+    elif state["mode"] == text.TRANSCRIPT:
+        answer, stream = vanilla(message = question, history = history, stream = True)
+    elif state["mode"] == text.VANILLA:
+        answer, stream = vanilla(message = question, history = history, stream = True)
+
+    # Either stream or write depending on the answer
+    if stream:
+        with st.chat_message(name = "assistant", avatar = avatars["assistant"]):
+            answer = st.write_stream(answer)
+    else:
+        with st.chat_message(name = "assistant", avatar = avatars["assistant"]):
+            answer = st.write(answer)
+
+    # Add assistant response to chat history
+    st.session_state.messages.append({"type": "chat", "role": "assistant", "content": answer})
+    st.session_state.history.append((question, answer))
+
+elif question:
+    # Display
+    display_message("user", avatars["user"], question)
+    st.session_state.messages.append({"type": "chat", "role": "user", "content": question})
+
     if state["mode"] == text.RAG:
         answer, stream = rag_chatbot(message = question, history = history, stream = True, n_results = 4)
     elif state["mode"] == text.FUNCTION_CALLING:

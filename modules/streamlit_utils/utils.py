@@ -1,10 +1,16 @@
+import tempfile
+import io
 import streamlit as st
+import whisper
+import whisper.utils
 from .param import avatars
 from ..ux_language_utils import Locale, Translator, TextResources, LANGUAGE_MAP
 
 global audio_value
 global audio_index
 audio_index = 0
+
+model = whisper.load_model("large-v3-turbo")
 
 ### FUNCTIONS
 # Function for message displaying and history
@@ -65,9 +71,42 @@ def render_page(text: TextResources, state: dict[str, Locale]):
     
     # Get audio UI and audio value
     audio_value = st.audio_input(f"Record a voice message {audio_index}th", key = audio_index)
+    transcript = None
     if audio_value:
         st.session_state.messages.append({"type": "audio", "role": None, "content": audio_value})
-        del audio_value
+        
+        # # Process data and get mel spectrogram
+        # buffer = io.BytesIO()
+        # # You need to set the name with the extension
+        # buffer.name = "file.mp3"
+        # .export(buffer, format="mp3")
+
+        # buffer = audio_value.getbuffer()
+        
+        audio_bytes = audio_value.getvalue()
+
+        buffer = io.BytesIO(audio_bytes)
+        buffer.name = "audio.wav"
+
+        with tempfile.NamedTemporaryFile(suffix = ".wav", delete = False) as tmp:
+            tmp.write(buffer.getvalue())
+            tmp.flush()
+            audio_path = tmp.name
+
+        audio = whisper.audio.load_audio(audio_path)
+        audio = whisper.pad_or_trim(audio)
+        mel = whisper.log_mel_spectrogram(audio, n_mels=model.dims.n_mels).to(model.device)
+
+        # Detect the spoken language
+        _, probs = model.detect_language(mel)
+        print(f"Detected language: {max(probs, key=probs.get)}")
+
+        # Decode the audio
+        options = whisper.DecodingOptions()
+        transcript = whisper.decode(model, mel, options).text
+
+        # if not audio_value.closed:
+        #     audio_value.flush()
         audio_index += 1
         audio_value = st.audio_input(f"Record a voice message {audio_index}th", key = audio_index)
 
@@ -92,5 +131,6 @@ def render_page(text: TextResources, state: dict[str, Locale]):
         "api_key": api_key,
         "mode": mode,
         "locale": locale,
-        "text": text
+        "text": text,
+        "audio_transcript": transcript,
     }
