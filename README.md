@@ -1,5 +1,8 @@
 # A demo of Streamlit app with LLMs
 
+![screenshot](./res/img/little-cat-read-a-book.jpg)
+![Alt text](./res/img/little-cat-read-a-book.jpg?raw=true "Title")
+
 ### This repo uses LLaMa CPP Python-binding API library to inference
 - The models are in .gguf format (downloaded from Hugging Face).
 - llama_cpp_python can also be used for agentic AI, especially the llama_cpp_agent library.
@@ -33,7 +36,8 @@ pip install -r requirements.txt
     - Multi-user use-case
     - Make the system more scalable
 
-2. Whisper AI for online transcripting purpose
+2. Transcripting:
+    - Some other streaming model for online transcripting purpose (currently the transcript model takes too long for short responses as Whisper only accepts 30-second input)
 
 3. A more complex agentic system using MCP:
     - Fix functions: email (parsing JSON), Googling (DuckDuckGo is limited)
@@ -41,6 +45,10 @@ pip install -r requirements.txt
     - Other mini and trivial function:
         + Multi-modal: a Coca model to describe text or using the built-in multi-modal models
         + Test out the reasoning-function calling paper (with reasoning chain associated with functions)
+
+4. Database:
+    - Use database for the model's chat history and sessions
+    - Could use different databases for self-learning: SQLite, PostgreSQL, MongoDB, etc.
 
 4. Dockerize the project
 
