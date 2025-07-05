@@ -8,9 +8,13 @@
 - llama_cpp_python can also be used for agentic AI, especially the llama_cpp_agent library.
 - The output of model in respond() function can be streamed word by word using llama_cpp's function. Need to find a way to incorporate it (streaming function) with Restful API - or just use Streamlit.
 
+---
+
 ### Streamlit is used as a demo for this model
 - Has temporary memory (will be lost if reload)
 - Show streamed output of model
+
+---
 
 ### Set-up
 1. **Env**
@@ -28,6 +32,8 @@ pip install -r requirements.txt
 3. **C++ and Visual Studio** may need to be installed
 
 4. Further guides would be available. Currently, some experiences in setting up the environment and code is in "stt_pj_exp.txt".
+
+---
 
 ### Future development
 1. Llama CPP Server (?)
@@ -50,11 +56,11 @@ pip install -r requirements.txt
     - Use database for the model's chat history and sessions
     - Could use different databases for self-learning: SQLite, PostgreSQL, MongoDB, etc.
 
-4. Dockerize the project
+5. Dockerize the project
 
-5. Package it (?)
+6. Package it (?)
 
-6. Trivia:
+7. Trivia and advanced stuff for later development:
     - Add memory using Database for the model
     - Testing Jan-Nano function calling and searching ability
     - Reimplementing prompts and agentic features from scratch
