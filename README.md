@@ -1,7 +1,6 @@
-# A demo of Streamlit app with LLMs
+# A demo of Streamlit app with LLMs (AIO submission)
 
-![screenshot](./res/img/little-cat-read-a-book.jpg)
-![Alt text](./res/img/little-cat-read-a-book.jpg?raw=true "Title")
+![Alt text](./res/img/little-cat-read-a-book.jpg?raw=true "Cute cat reading a book!")
 
 ### This repo uses LLaMa CPP Python-binding API library to inference
 - The models are in .gguf format (downloaded from Hugging Face).
