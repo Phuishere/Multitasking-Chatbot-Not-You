@@ -79,7 +79,7 @@ def respond(
                 n_ctx=8192,
                 n_threads=8,
                 n_threads_batch=8,
-                verbose=True, # Disabling debug output
+                verbose=False, # Disabling debug output
             )
             llm_model = model
 

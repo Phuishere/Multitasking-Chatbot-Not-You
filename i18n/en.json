@@ -13,5 +13,12 @@
     "VANILLA": "Vanilla",
     "RAG": "RAG",
     "FUNCTION_CALLING": "Function calling",
-    "TRANSCRIPT": "Transcript"
+    "TRANSCRIPT": "Transcript",
+
+    
+    "TRANSCRIPT_PROMPT": "Record {audio_index}th voice message",
+    "RAG_FILE_HEADER": "Your file :blue[documents] :sunglasses:",
+    "RAG_FILE_LABEL": "**File {index}**",
+    "RAG_PROMPT": "Choose document file(s)",
+    "RAG_UPDATE_ANNOUNCEMENT": "Update Database successfully"
 }

@@ -13,5 +13,11 @@
     "VANILLA": "Chat bình thường",
     "RAG": "Trích xuất tài liệu",
     "FUNCTION_CALLING": "Gọi hàm",
-    "TRANSCRIPT": "Tốc ký - Ghi âm"
+    "TRANSCRIPT": "Tốc ký - Ghi âm",
+
+    "TRANSCRIPT_LABEL": "Ghi âm tin nhắn thoại thứ {audio_index}th",
+    "RAG_FILE_HEADER": "Tệp :blue[tài liệu] của bạn :sunglasses:",
+    "RAG_FILE_LABEL": "**Tệp {index}**",
+    "RAG_PROMPT": "Chọn (nhiều) tệp tài liệu",
+    "RAG_UPDATE_ANNOUNCEMENT": "Cập nhật database thành công"
 }

@@ -7,9 +7,8 @@ from torch import classes
 import streamlit as st
 
 from modules.streamlit_utils import init_page, render_page, display_message, avatars
-from modules.ux_language_utils import Locale, Translator, TextResources
-from modules.ux_language_utils.data import MainText, SideBarText
-from modules import vanilla, function_call_chatbot, rag_chatbot, bluetooth_processor
+from modules.ux_utils import Locale, Translator, TextResources
+from modules.chatbot_utils import vanilla, function_call_chatbot, rag_chatbot, bluetooth_processor
 from modules.chatbot_utils.install_utils import install_models
 
 # Load dotenv
@@ -93,19 +92,15 @@ question = st.chat_input(
 # Get answer from each mode
 if st.session_state.state["audio_transcript"]:
     # Display
-    display_message("user", avatars["user"], question)
-    st.session_state.messages.append({"type": "chat", "role": "user", "content": question})
+    display_message("user", avatars["user"], st.session_state.state["audio_transcript"])
+    st.session_state.messages.append({
+        "type": "chat", "role": "user",
+        "content": st.session_state.state["audio_transcript"] 
+    })
 
     # Get transcript from audio
     question = st.session_state.state["audio_transcript"]
-    if state["mode"] == text.RAG:
-        answer, stream = rag_chatbot(message = question, history = history, stream = True, n_results = 4)
-    elif state["mode"] == text.FUNCTION_CALLING:
-        answer, stream = function_call_chatbot(message = question, history = history, stream = True)
-    elif state["mode"] == text.TRANSCRIPT:
-        answer, stream = vanilla(message = question, history = history, stream = True)
-    elif state["mode"] == text.VANILLA:
-        answer, stream = vanilla(message = question, history = history, stream = True)
+    answer, stream = vanilla(message = question, history = history, stream = True)
 
     # Either stream or write depending on the answer
     if stream:
@@ -125,12 +120,17 @@ elif question:
     st.session_state.messages.append({"type": "chat", "role": "user", "content": question})
 
     if state["mode"] == text.RAG:
-        answer, stream = rag_chatbot(message = question, history = history, stream = True, n_results = 4)
+        # If file has any change, update Chroma database
+        update_database = st.session_state.state.get("update_database")
+        answer, stream = rag_chatbot(
+            message = question, history = history, stream = True,
+            n_results = 4, update_database = update_database, text = text
+        )
     elif state["mode"] == text.FUNCTION_CALLING:
         answer, stream = function_call_chatbot(message = question, history = history, stream = True)
-    elif state["mode"] == text.TRANSCRIPT:
-        answer, stream = vanilla(message = question, history = history, stream = True)
     elif state["mode"] == text.VANILLA:
+        answer, stream = vanilla(message = question, history = history, stream = True)
+    else:
         answer, stream = vanilla(message = question, history = history, stream = True)
 
     # Either stream or write depending on the answer

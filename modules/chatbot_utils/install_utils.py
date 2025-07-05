@@ -13,8 +13,8 @@ def install_models(folder_name: str = r'llm_models') -> None:
 
     # Model download URLs and their corresponding filenames
     model_files = [
-        { "repo_id": "Ceenen2302/Llama-3.2-1B-Instruct-GRPO-GGUF", "filename": "Llama-3.2-1B-Instruct-GRPO-GGUF.gguf" },
-        { "repo_id": "unsloth/Llama-3.2-1B-Instruct-GGUF", "filename": "Llama-3.2-1B-Instruct-Q8_0.gguf" },
+        # { "repo_id": "Ceenen2302/Llama-3.2-1B-Instruct-GRPO-GGUF", "filename": "Llama-3.2-1B-Instruct-GRPO-GGUF.gguf" },
+        # { "repo_id": "unsloth/Llama-3.2-1B-Instruct-GGUF", "filename": "Llama-3.2-1B-Instruct-Q8_0.gguf" },
         { "repo_id": "unsloth/Llama-3.2-3B-Instruct-GGUF", "filename": "Llama-3.2-3B-Instruct-Q8_0.gguf" }
     ]
 

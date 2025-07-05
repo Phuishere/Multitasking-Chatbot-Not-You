@@ -4,6 +4,8 @@ from chromadb import Collection
 from llama_index.core import VectorStoreIndex, Settings, SimpleDirectoryReader, VectorStoreIndex
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.vector_stores.chroma import ChromaVectorStore
+import streamlit as st
+from ..ux_utils import Locale, TextResources, Translator
 
 embed_model: HuggingFaceEmbedding = None
 collection: Collection = None
@@ -43,12 +45,19 @@ def document_embedding():
     # Embed the document (when run for the first time)
     _ = ChromaVectorStore(chroma_collection = collection, persist_dir = "./chroma")
 
-def get_rag_context(message: str, n_results: int = 4):
+def get_rag_context(message: str, n_results: int = 4,
+                    update_database: bool = False, text: TextResources = None):
+    # In case text not passed into the function
+    if text is None:
+        translator = Translator(Locale.ENGLISH)
+        text = TextResources(translator = translator)
+    
     # Get embed_model and collection
     global embed_model
     global collection
-    if embed_model is None or collection is None:
+    if (embed_model is None or collection is None) or update_database:
         document_embedding()
+        st.success(text.RAG_UPDATE_ANNOUNCEMENT)
 
     # Clip the max n_results
     if n_results > 5:

@@ -15,7 +15,6 @@ venv/
 
 # Vector database and video resources
 **/chroma/
-**/res/
 **/**.mp3
 **/**.mp4
 **/**.m4a

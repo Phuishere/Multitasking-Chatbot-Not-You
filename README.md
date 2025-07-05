@@ -12,7 +12,7 @@
 ### Set-up
 1. **Env**
 - Python version: 3.11.9
-- Dependencies:
+- Dependencies (Windows):
 ```
 python -m venv env
 ./env/Scripts/activate.bat
